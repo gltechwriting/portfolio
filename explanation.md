@@ -2,7 +2,7 @@
 
 # Using the Connector Module
 
-![moduleheader](https://github.com/gltechwriting/gltechwritingrepo/blob/main/Portfolio/images/connectormoduleheader.png)
+![moduleheader](https://github.com/gltechwriting/portfolio/blob/main/images/connectormoduleheader.png)
 
 ## Overview
 
@@ -30,7 +30,7 @@ The following screenshot shows the Connector module on a dashboard with all inte
 
 **Note:** If you do not have the *Configurator* or *Administrator* user roles, all of the fields described below will be read only.
 
-![modulecallouts](https://github.com/gltechwriting/gltechwritingrepo/blob/main/Portfolio/images/connectormoduleheadercallouts.png)
+![modulecallouts](https://github.com/gltechwriting/portfolio/blob/main/images/connectormoduleheadercallouts.png)
 
 |Number|Item|Description|
 |---|---|---|
@@ -53,13 +53,13 @@ The following screenshot shows the Connector module on a dashboard with all inte
 
 The following example shows a Connector module configured to return site traffic data from Google Analytics.
 
-![example](https://github.com/gltechwriting/gltechwritingrepo/blob/main/Portfolio/images/connectormoduleheaderexample.png)
+![example](https://github.com/gltechwriting/portfolio/blob/main/images/connectormoduleheaderexample.png)
 
 Modules like this are very useful for reporting detailed, up-to-date information about traffic to our website. We are able to see in real-time the impact of product releases, news items, etc as they happen.
 
 ### Spotify
 
-We have designed an example using a Connector module configured to return data about a specific artist from Spotify. The full example was built using the walkthrough described in the [Connector Module Worked Example](https://github.com/gltechwriting/gltechwritingrepo/blob/main/Portfolio/how-to-guide.md), which uses the [Get Artist's Top Tracks](https://developer.spotify.com/documentation/web-api/reference/get-an-artists-top-tracks) endpoint. Some of our users are involved in social media, so returning statistics about music artists is helpful when creating content for our audience.
+We have designed an example using a Connector module configured to return data about a specific artist from Spotify. The full example was built using the walkthrough described in the [Connector Module Worked Example](https://github.com/gltechwriting/portfolio/blob/main/how-to-guide.md), which uses the [Get Artist's Top Tracks](https://developer.spotify.com/documentation/web-api/reference/get-an-artists-top-tracks) endpoint. Some of our users are involved in social media, so returning statistics about music artists is helpful when creating content for our audience.
 
 ## Useful Information
 
