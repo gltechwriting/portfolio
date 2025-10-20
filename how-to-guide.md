@@ -1,111 +1,65 @@
-<!-- This document is based on a walkthrough I wrote for my previous employer Matillion and describes how to connect to Spotify's API to extract data about a given artist. Matillion's Data Loader product is designed to extract data from one or more APIs, perform various transformations, and load the resulting modified data into a cloud warehouse. As such, this example could be applied to any cloud data provider the user could want to use and describes a complete beginning-to-end process any user could follow. I have modified this example to remove anything specific to Matillion, and changed to the context to be similar to the other examples. -->
+<!-- This topic is similar to how I have written many 'how to...' topics across my career. Topics such as this are written with a high presumption of prior knowledge and are written to address a specific goal or problem a user has -->
 
-# Connector Module Worked Example
+# How to Create a MyProduct Account
 
-The following guide describes how to use the Connector module. The Connector module can extract data from any compatible REST API. Because the module has no endpoints or authentication details, you will need to acquire and provide this information yourself.
+This topic describes the process to create a MyProduct account. This guide is applicable to first-time users who wish to create their first account and for pre-existing users who require additional accounts.
 
-The example we are going to follow uses the Spotify API to perform a fairly basic data extraction call. The guide is written to effectively guide you through the process, including authentication steps.
+**Note**: You cannot use MyProduct without an account.
 
-Refer to Spotify's [Web API](https://developer.spotify.com/documentation/web-api) documentation for more information.
+To create a new account:
 
-## Authentication
+1. Go to www.myproduct.com to [register](#register) with our team (**first-time users only**).
+1. Login to MyProduct and [create an account](#create-a-myproduct-account).
+1. Choose the required [subscription](#choose-a-subscription) type for that account.
 
-You will require an **access token** to be able to make calls to Spotify's API, which first requires a valid user account and the creation of an app. For reference, the process we are following is documented [here](https://developer.spotify.com/documentation/web-api/tutorials/getting-started), but we will go through it fully for clarity.
+## Register
 
-1. Log in to the Spotify [developer dashboard](https://developer.spotify.com/dashboard) using your Spotify account. If you don't have one, you will need to create one.
-2. Click **Create App** to begin creating a new App. Complete the fields as required. We used our Dashboard URI as the Redirect URI but anything can be used. Click **Save**.
-3. You will return to the main dashboard for your app. Click **Settings** in the top-right corner to view the **Basic Information** for your app, including the **Client ID** and **Client Secret**. You will need to click **View client secret** to access the client secret.
-4. Make copies of both the Client ID and Client Secret.
+New users must first register to create an account in MyProduct. Existing users who have already registered can skip this section.
 
-**Important:** You will not be able to view the Client Secret again after this point. Ensure you have made a copy for future reference.
+To register:
 
-You will now need to make a POST request to Spotify's API through your preferred API client. We will use [Postman](https://www.postman.com/).
+1. Go to [www.myproduct.com](link).
+1. Select "Sign Up" in the top-right of the page to be directed to the registration portal.
+1. Follow the steps and await the confirmation email.
+1. Click 'Confirm' in the confirmation email to complete the registration process.
+1. Access MyProduct and login with your registration details.
 
-1. Configure a POST request to the Spotify token request endpoint:
-`https://accounts.spotify.com/api/token`
-2. Add a header entry as follows:
-Key: `Content-Type`, Value: `application/x-www-form-urlencoded`
-3. Add the following HTTP body, replacing the placeholder values with your own Client ID and Client Secret. If you are using Postman, you can use the body as Raw.
-`grant_type=client_credentials&client_id=<your-client-id>&client_secret=<your-client-secret>`
-4. Send your request.
+You can now create a MyProduct account.
 
-A successful request should return the access token formatted as follows:
+## Create a MyProduct Account
 
-```
-{
-    "access_token": "BQCRUpmOZF5XvXGKNsdsTBAVc4NpL_7y8DSZTv_BG56rJvRfS5wYR9HFzKphgRqMCDnTnFn97KBmtqtPRrtL0ANVcezyjFsz0B6JAU1kOK3wFUA19EE",
-    "token_type": "Bearer",
-    "expires_in": 3600
-}
-```
+Registered users can create a MyProduct account. 
 
-**Note:** The token expires after one hour but this will be sufficient for our example. You can re-send the POST request to receive a new token as required. Make a copy of the access token, as we can now begin configuring the Connector module.
+To create an account:
 
-## Compose the Endpoint
+1. Login to MyProduct.
+1. Access the **Sidebar** and navigate to **Account** -> **Create**.
+1. Follow the steps in the "Create Account" dialog:
+    - Enter a clear and descriptive **Account Name**.
+    - Choose whether the account should be **Public** or **Hidden**.
+    - **Link** the account to any other accounts you manage (optional) .
+1. Click "Save" when you are satisfied with your selections.
+1. Review all information in the "Confirmation" dialog and click "Create Account".
+1. Access the sidebar and navigate to **Account** -> **Manage** to view your new account.
 
-We are going to use the [Get Artist's Top Tracks](https://developer.spotify.com/documentation/web-api/reference/get-an-artists-top-tracks) endpoint. This is a relatively simple endpoint that will return the top tracks for a specified artist for a given geographic region. Refer to the linked document for full information regarding the endpoint and response data.
+You must now assign a **Subscription** to the account.
 
-The endpoint URL is: `https://api.spotify.com/v1/artists/{id}/top-tracks`
+## Choose a Subscription
 
-As you can see, the endpoint first requires a single parameter: {id}. This is the **artist_id** of the artist you want to query, and is gathered as follows:
+Every account requires a [subscription](link) to use MyProduct. Accounts without a valid subscription are locked to **Read-Only** mode and cannot make any changes.
 
-1. Locate your chosen artist in the Spotify client.
-2. Click the three dots ... near the top of the artist's page, and click **Share -> Copy link to artist**.
-3. Paste the copied link into a text editor, and you should see the following:
-`https://open.spotify.com/artist/06HL4z0CvFAxyc27GXpf02?si=r_2RdlprRwSsQhSM63VKFw`
-The artist ID is the string after *ht<span>tps://open.spotify.com/artist/* and before the question mark **?**. For example:
-ht<span>tps://open.spotify.com/artist/**06HL4z0CvFAxyc27GXpf02**?si=r_2RdlprRwSsQhSM63VKFw
-4. Copy the artist ID.
+To assign a subscription:
 
-Additionally, you will need to specify a geographic region by using a **country code**. The country code is the two-digit [ISO 3166-1 alpha-2 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) for the relevant country. For example, a country in the United Kingdom would use the code `GB`. We will detail how to add this parameter later on, but for now make a note of the country code you want to use.
+1. Access the sidebar and navigate to **Account** -> **Manage**.
+1. Select the relevant account to open the configuration page.
+1. Click on "Subscription" in the center of the page to open the **Subscription** dialog.
 
-We now have everything we need to compose the GET request for our connector: the access token for authentication, the endpoint URL, and the artist ID and country code required for that endpoint.
+    **Note**: Accounts with an active subscription will show the current subscription type and time remaining. Accounts with no subscription will not display anything.
+1. Select the required subscription type:
+    - **Basic** - Dashboard and module access. 
+    - **Advanced** - Configuration privileges.
+    - **Administrator** - User management (**maximum one account per user**).
+1. Select the required **Duration** for the subscription. The default selection is "30 Days".
+1. Select "Save" when you are satisfied with your selections.
 
-## Create a Connector Module
-
-1. Select **Edit Mode** to access the dashboard **Toolbox**.
-2. Drag-and-drop a **Connector** module from the toolbox onto the dashboard.
-3. Click **Edit** on the module to access the configuration settings.
-4. Complete the configuration as decribed in [Connector Module Configuration Guide](link) up until the point where you are required to configure the endpoint, as we will use the details from the earlier stages of this guide.
-
-### Configure the request
-
-1. If not already, set the request type to **GET** from the drop-down menu.
-2. Paste the endpoint URL from earlier into the address field:
-`https://api.spotify.com/v1/artists/{id}/top-tracks`
-3. Within the **Authentication** tab, select **Bearer Token** from the **Authentication** Type drop-down menu.
-4. Paste the access token you generated earlier into the Token text field. You can generate a new one if your original has expired.
-5. Select the **Parameters** tab. Here you can see a parameter already in place for the {id} parameter in the endpoint. Paste your chosen artist ID into the **Value field**.
-6. Now we need to add the country code. Click **Add a Parameter** to add a new parameter. We will define our query for the United Kingdom, so configure it as follows: Name: `market`, Value: `GB`.
-
-At this point the Connector module is configured. We can test the connection by click Send to make your GET request to the `Get All Artist's Top Tracks` endpoint.
-
-A successful result should return a large body of text, part of which is shown below. Now that we know our endpoint is configured correctly, we can now **Save** it and complete the process. The Connector module is now added to the dashboard with our API call configured and working correctly.
-
-```
-{
-    "tracks": [
-        {
-            "album":
-                {
-                    "album_type": "album",
-                    "artists":
-                                [
-                                    {
-                                        "external_urls": {
-                                                           "spotify": "https://open.spotify.com/artist/06HL4z0CvFAxyc27GXpf02"
-                                                        },
-                                        "href": "https://api.spotify.com/v1/artists/06HL4z0CvFAxyc27GXpf02",
-                                        "id": "06HL4z0CvFAxyc27GXpf02",
-                                        "name": "Taylor Swift",
-                                        "type": "artist",
-                                        "uri": "spotify:artist:06HL4z0CvFAxyc27GXpf02"
-                                    }
-                                ]
-                }
-        }
-]
-}
-```
-
-You can return to the Connector module at any point to add further endpoints and edit existing ones following the process above.
+The account can now be used within MyProduct.
