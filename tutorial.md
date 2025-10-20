@@ -1,64 +1,111 @@
-<!-- This is an example of how I have written tutorials across various roles. For this document, I created a basic website after completing the "Complete Intro to Web Development, v3" by Brian Holt on frontendmasters.com and documented my own process as a tutorial. I aim to provide an entry-level experience while guiding towards further development. -->
+<!-- This document is based on a walkthrough I wrote for my previous employer Matillion and describes how to connect to Spotify's API to extract data about a given artist. Matillion's Data Loader product is designed to extract data from one or more APIs, perform various transformations, and load the resulting modified data into a cloud warehouse. As such, this example could be applied to any cloud data provider the user could want to use and describes a complete beginning-to-end process any user could follow. I have modified this example to remove anything specific to Matillion, and changed to the context to be similar to the other examples. -->
 
-# How to Create a Basic Website - WIP
+# Connector Module Worked Example
 
-This tutorial will guide you through the process of creating a basic website from scratch. This is only one example and by no means comprehensive, but it will give you a good insight into the different processes and requirements involved.
+The following guide describes how to use the Connector module. The Connector module can extract data from any compatible REST API. Because the module has no endpoints or authentication details, you will need to acquire and provide this information yourself.
 
-Building your own webpages is a hugely rewarding process and is a good way to learn about coding and web development in general.
+The example we are going to follow uses the Spotify API to perform a fairly basic data extraction call. The guide is written to effectively guide you through the process, including authentication steps.
 
-## Before We Get Started
+Refer to Spotify's [Web API](https://developer.spotify.com/documentation/web-api) documentation for more information.
 
-As much as we would like you to be able to immediately jump in and start working there are some important ideas we need to explore before we write our first line of code. 
+## Authentication
 
-Our webpage is composed of three key elements:
-- **HTML**: a structured language used to build the physical webpage
-- **CSS**: a supplementary set of instructions to style the HTML and define the appearance of the page
-- **JavaScript**: a programming language used to build the interactive elements we will incorporate into the webpage
+You will require an **access token** to be able to make calls to Spotify's API, which first requires a valid user account and the creation of an app. For reference, the process we are following is documented [here](https://developer.spotify.com/documentation/web-api/tutorials/getting-started), but we will go through it fully for clarity.
 
-A simple way to understand how these three elements work together is like a film or tv show: HTML builds the set, CSS provides paint and costumes, and JavaScript tells the actors exactly what to do.
+1. Log in to the Spotify [developer dashboard](https://developer.spotify.com/dashboard) using your Spotify account. If you don't have one, you will need to create one.
+2. Click **Create App** to begin creating a new App. Complete the fields as required. We used our Dashboard URI as the Redirect URI but anything can be used. Click **Save**.
+3. You will return to the main dashboard for your app. Click **Settings** in the top-right corner to view the **Basic Information** for your app, including the **Client ID** and **Client Secret**. You will need to click **View client secret** to access the client secret.
+4. Make copies of both the Client ID and Client Secret.
 
-We will provide the specific instructions needed to employ each of these elements as we go, but you may find it easier to progress or understand each step if you already have some familiarity with these concepts. HTML, CSS, and JavaScript are the building blocks of any website so expanding your knowledge will help you in the future as you work on your own projects.
+**Important:** You will not be able to view the Client Secret again after this point. Ensure you have made a copy for future reference.
 
-Some free resources you can use are:
+You will now need to make a POST request to Spotify's API through your preferred API client. We will use [Postman](https://www.postman.com/).
 
-- [w3schools](https://www.w3schools.com/)
-- [CodeAcademy](https://www.codecademy.com/)
-- [Khan Academy](https://www.khanacademy.org/computing/computer-programming)
+1. Configure a POST request to the Spotify token request endpoint:
+`https://accounts.spotify.com/api/token`
+2. Add a header entry as follows:
+Key: `Content-Type`, Value: `application/x-www-form-urlencoded`
+3. Add the following HTTP body, replacing the placeholder values with your own Client ID and Client Secret. If you are using Postman, you can use the body as Raw.
+`grant_type=client_credentials&client_id=<your-client-id>&client_secret=<your-client-secret>`
+4. Send your request.
 
-The following sites provide more in-depth teaching but require a subscription:
+A successful request should return the access token formatted as follows:
 
-- [FrontendMasters](https://frontendmasters.com/)
-- [Udemy](https://www.udemy.com/)
+```
+{
+    "access_token": "BQCRUpmOZF5XvXGKNsdsTBAVc4NpL_7y8DSZTv_BG56rJvRfS5wYR9HFzKphgRqMCDnTnFn97KBmtqtPRrtL0ANVcezyjFsz0B6JAU1kOK3wFUA19EE",
+    "token_type": "Bearer",
+    "expires_in": 3600
+}
+```
 
-Additionally, we are going to use [GitHub](https://github.com/) to store all of our work. Our website will be made up of several different files so organising and protecting them is essential. This is not required for this tutorial but you may find it useful - and certainly useful for future projects! GitHub is a **source control** system which offers two important features, among many:
+**Note:** The token expires after one hour but this will be sufficient for our example. You can re-send the POST request to receive a new token as required. Make a copy of the access token, as we can now begin configuring the Connector module.
 
-- **Cloud-based data storage**: your work is safe from any problems with your local machine!
-- **Version control**: revisit earlier versions of your work if you've taken a wrong turn.
+## Compose the Endpoint
 
-Work is uploaded, or 'pushed', to GitHub using commands entered into a program with a command line interface, such as [Visual Studio Code](https://code.visualstudio.com/) or [GitBash](https://www.atlassian.com/git/tutorials/git-bash). Commands are written in a language called **Git** and it may seem difficult for a first-time user to understand. GitHub itself also requires some set-up so you will need to complete all of the necessary steps before we begin.
+We are going to use the [Get Artist's Top Tracks](https://developer.spotify.com/documentation/web-api/reference/get-an-artists-top-tracks) endpoint. This is a relatively simple endpoint that will return the top tracks for a specified artist for a given geographic region. Refer to the linked document for full information regarding the endpoint and response data.
 
-You can learn about GitHub and the Git language from any of the sites linked earlier. You can also learn from GitHub directly at: [GitHub - Get  Started](https://docs.github.com/en/get-started).
+The endpoint URL is: `https://api.spotify.com/v1/artists/{id}/top-tracks`
 
-There are plenty of other source control services available so feel free to explore alternatives that better suit you.
+As you can see, the endpoint first requires a single parameter: {id}. This is the **artist_id** of the artist you want to query, and is gathered as follows:
 
-With all of that out of the way, lets begin our journey towards our first webpage!
+1. Locate your chosen artist in the Spotify client.
+2. Click the three dots ... near the top of the artist's page, and click **Share -> Copy link to artist**.
+3. Paste the copied link into a text editor, and you should see the following:
+`https://open.spotify.com/artist/06HL4z0CvFAxyc27GXpf02?si=r_2RdlprRwSsQhSM63VKFw`
+The artist ID is the string after *ht<span>tps://open.spotify.com/artist/* and before the question mark **?**. For example:
+ht<span>tps://open.spotify.com/artist/**06HL4z0CvFAxyc27GXpf02**?si=r_2RdlprRwSsQhSM63VKFw
+4. Copy the artist ID.
 
-## Overview
+Additionally, you will need to specify a geographic region by using a **country code**. The country code is the two-digit [ISO 3166-1 alpha-2 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) for the relevant country. For example, a country in the United Kingdom would use the code `GB`. We will detail how to add this parameter later on, but for now make a note of the country code you want to use.
 
-We are going to create a website with an interactive word-finding game, much like **Wordle** and its many imitators. This will involve building a simple webpage to host the JavaScript tool that comprises the word-finding game itself. You may remember that the original Wordle game was developed by one man as a side project for his partner and quickly became a worldwide phenomenon!
+We now have everything we need to compose the GET request for our connector: the access token for authentication, the endpoint URL, and the artist ID and country code required for that endpoint.
 
-We will follow this basic journey:
+## Create a Connector Module
 
-1. Build our HTML framework
-2. Style our HTML using CSS
-3. Build our game using JavaScript and then incorporate it into our HTML
+1. Select **Edit Mode** to access the dashboard **Toolbox**.
+2. Drag-and-drop a **Connector** module from the toolbox onto the dashboard.
+3. Click **Edit** on the module to access the configuration settings.
+4. Complete the configuration as decribed in [Connector Module Configuration Guide](link) up until the point where you are required to configure the endpoint, as we will use the details from the earlier stages of this guide.
 
-By the end we will have our complete, albeit basic, website. Feel free to expand on this example and experiment however you like once you have finished.
+### Configure the request
 
-## Lets Build some HTML
+1. If not already, set the request type to **GET** from the drop-down menu.
+2. Paste the endpoint URL from earlier into the address field:
+`https://api.spotify.com/v1/artists/{id}/top-tracks`
+3. Within the **Authentication** tab, select **Bearer Token** from the **Authentication** Type drop-down menu.
+4. Paste the access token you generated earlier into the Token text field. You can generate a new one if your original has expired.
+5. Select the **Parameters** tab. Here you can see a parameter already in place for the {id} parameter in the endpoint. Paste your chosen artist ID into the **Value field**.
+6. Now we need to add the country code. Click **Add a Parameter** to add a new parameter. We will define our query for the United Kingdom, so configure it as follows: Name: `market`, Value: `GB`.
 
-## Time to Style
+At this point the Connector module is configured. We can test the connection by click Send to make your GET request to the `Get All Artist's Top Tracks` endpoint.
 
-## Making a Game
+A successful result should return a large body of text, part of which is shown below. Now that we know our endpoint is configured correctly, we can now **Save** it and complete the process. The Connector module is now added to the dashboard with our API call configured and working correctly.
 
-## Next Steps and Further Expansion
+```
+{
+    "tracks": [
+        {
+            "album":
+                {
+                    "album_type": "album",
+                    "artists":
+                                [
+                                    {
+                                        "external_urls": {
+                                                           "spotify": "https://open.spotify.com/artist/06HL4z0CvFAxyc27GXpf02"
+                                                        },
+                                        "href": "https://api.spotify.com/v1/artists/06HL4z0CvFAxyc27GXpf02",
+                                        "id": "06HL4z0CvFAxyc27GXpf02",
+                                        "name": "Taylor Swift",
+                                        "type": "artist",
+                                        "uri": "spotify:artist:06HL4z0CvFAxyc27GXpf02"
+                                    }
+                                ]
+                }
+        }
+]
+}
+```
+
+You can return to the Connector module at any point to add further endpoints and edit existing ones following the process above.
