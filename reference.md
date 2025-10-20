@@ -1,18 +1,17 @@
-<!-- This document is an example of how I have written API reference guides in previous roles. The API and endpoints described in this topic are fictional, but the style and structure are the same as I have written professionally. -->
+```This document is an example of how I have written API reference guides in previous roles. The API and endpoints described in this topic are fictional, but the style and structure are the same as I have written professionally.```
 
 # SCADA API Reference Guide
 
-The SCADA API allows users to retrieve data from any Remote Terminal Uplink (RTU) conected to the SCADA network, enabling personnel to query and maintain devices in the field.
+The SCADA API allows users to retrieve data from any Remote Terminal Uplink (RTU) connected to the SCADA network, enabling personnel to query and maintain devices in the field.
 
 You can access the SCADA API using a REST API GUI client such as **Postman** or using a command-line interface like cURL.
 
-All RTUs are contained within a closed network and cannot be accessed by outside devices. Please contact your supervisor if you need to add a new device to the network.
+All RTUs are contained within a closed network and cannot be accessed by non-approved devices. Please contact your supervisor if you need to add a new device to the network.
 
 ### Prerequisites
 
-- You will require your employee credentials to authenticate with the SCADA API.
-- You can only make calls to the SCADA API using an approved device. Calls from non-approved devices will automatically fail.
-- You will require the network ID of each RTU you wish to query.
+- Your employee credentials to authenticate with the SCADA API.
+- The network ID of each RTU you wish to query.
 
 ### Base URI
 
