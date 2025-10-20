@@ -1,4 +1,4 @@
-<!-- This topic is similar to how I have written many 'how to...' topics across my career. Topics such as this are written with a high presumption of prior knowledge and are written to address a specific goal or problem a user has -->
+```This topic is similar to how I have written many 'how to...' topics across my career. Topics such as this are written with a high presumption of prior knowledge and are written to address a specific goal or problem a user has```
 
 # How to Create a MyProduct Account
 

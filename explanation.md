@@ -1,4 +1,4 @@
-<!-- This document is an example of a topic I wrote for my previous employer Evolutionizer. Their EVO-Cloud product uses a dashboard to host one or more modules that each perform a single specific function such as displaying a list, peforming financial calculations, and so on. By combining several modules on the dashboard, users can create multi-stafe processes to achieve their goals. The aim of topics like this was to describe a module in isolation without referencing how to create or configure it, as that information was written in a dedicated configuration manual. The topic concludes with several examples of how the module would be configured and used within a dashboard to help give users the full context of its application. I have removed anything specific to Evolutionizer and kept the content generic.-->
+```This document is an example of a topic I wrote for my previous employer Evolutionizer. Their EVO-Cloud product uses a dashboard to host one or more widgets that each perform a single specific function such as displaying a list, peforming financial calculations, and so on. By combining several widgets on the dashboard users can create multi-stage processes to achieve their goals. The aim of topics like this was to describe a single widget in isolation without referencing how to create or configure it, as that was documented separately.```
 
 # Using the Connector Module
 
@@ -59,10 +59,10 @@ Modules like this are very useful for reporting detailed, up-to-date information
 
 ### Spotify
 
-We have designed an example using a Connector module configured to return data about a specific artist from Spotify. The full example was built using the walkthrough described in the [Connector Module Worked Example](https://github.com/gltechwriting/portfolio/blob/main/how-to-guide.md), which uses the [Get Artist's Top Tracks](https://developer.spotify.com/documentation/web-api/reference/get-an-artists-top-tracks) endpoint. Some of our users are involved in social media, so returning statistics about music artists is helpful when creating content for our audience.
+We have designed an example using a Connector module configured to return data about a specific artist from Spotify. The full example was built using the walkthrough described in the [Connector Module Worked Example](https://github.com/gltechwriting/portfolio/blob/main/tutorial.md), which uses the [Get Artist's Top Tracks](https://developer.spotify.com/documentation/web-api/reference/get-an-artists-top-tracks) endpoint. Some of our users are involved in social media, so returning statistics about music artists is helpful when creating content for our audience.
 
 ## Useful Information
 
-- You can configure the Connector module to automatically make API calls according to a defined schedule, or manually by users when required.
+- You can configure the Connector module to automatically make requests according to a defined schedule.
 - You can save and export a Connector module configuration for quick and easy re-use elsewhere.
 - You can include as many Connector modules on a dashboard as required. You should always be considerate of the potential impact on traffic and latency if you are making too many requests to the same target on the same dashboard.
